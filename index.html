@@ -22,8 +22,8 @@ td.level{white-space:nowrap;font-weight:700;color:var(--accent)}td.actions{white
 <body>
 <header><h1 id="name">BMS 難易度表</h1></header>
 <main>
-<section class="intro"><p id="status" role="status">読み込み中…</p><p class="legend">タイトルからLR2IR、VIEWから譜面ビューアを開けます。本体・差分は登録されたURLを表示します。</p><nav class="level-nav" id="level-nav" aria-label="レベル一覧"></nav></section>
-<div class="table-wrap"><table><thead><tr><th>Level</th><th>Title / LR2IR</th><th>Artist</th><th>本体</th><th>差分</th><th>VIEW</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div>
+<section class="intro"><p id="status" role="status">読み込み中…</p><p class="legend">IR欄から各ランキング、VIEWから譜面ビューアを開けます。本体・差分は登録されたURLを表示します。</p><nav class="level-nav" id="level-nav" aria-label="レベル一覧"></nav></section>
+<div class="table-wrap"><table><thead><tr><th>Level</th><th>Title</th><th>Artist</th><th>IR</th><th>本体</th><th>差分</th><th>VIEW</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div>
 </main>
 <script>
 'use strict';
@@ -40,8 +40,8 @@ async function load(){
  const body=document.querySelector('#rows');const nav=document.querySelector('#level-nav');let index=0;
  for(const [level,items] of groups){
   const id='level-'+index++;const label=symbol+level;const navLink=document.createElement('a');navLink.href='#'+id;navLink.textContent=label;nav.appendChild(navLink);
-  const group=document.createElement('tr');group.className='level-row';group.id=id;const heading=document.createElement('th');heading.colSpan=7;heading.scope='rowgroup';heading.append(document.createTextNode(label));const count=document.createElement('span');count.className='count';count.textContent=items.length+' 譜面';heading.appendChild(count);group.appendChild(heading);body.appendChild(group);
-  for(const row of items){const tr=document.createElement('tr');tr.className='chart';tr.appendChild(cell(label,'level'));const title=cell('','title');const md5=text(row.md5).trim();if(/^[0-9a-f]{32}$/i.test(md5)){title.appendChild(link(text(row.title)||'（タイトルなし）','http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5='+encodeURIComponent(md5)))}else title.textContent=text(row.title)||'（タイトルなし）';tr.appendChild(title);tr.appendChild(cell(row.artist,'artist'));tr.appendChild(urlCell('本体',row.url));tr.appendChild(urlCell('差分',row.url_diff));tr.appendChild(urlCell('VIEW',/^[0-9a-f]{32}$/i.test(md5)?'https://bms-score-viewer.pages.dev/view?md5='+encodeURIComponent(md5):''));tr.appendChild(cell(row.comment,'comment'));body.appendChild(tr)}
+  const group=document.createElement('tr');group.className='level-row';group.id=id;const heading=document.createElement('th');heading.colSpan=8;heading.scope='rowgroup';heading.append(document.createTextNode(label));const count=document.createElement('span');count.className='count';count.textContent=items.length+' 譜面';heading.appendChild(count);group.appendChild(heading);body.appendChild(group);
+  for(const row of items){const tr=document.createElement('tr');tr.className='chart';tr.appendChild(cell(label,'level'));const title=cell('','title');const md5=text(row.md5).trim();if(/^[0-9a-f]{32}$/i.test(md5)){title.appendChild(link(text(row.title)||'（タイトルなし）','http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5='+encodeURIComponent(md5)))}else title.textContent=text(row.title)||'（タイトルなし）';tr.appendChild(title);tr.appendChild(cell(row.artist,'artist'));const ir=cell('','actions');if(/^[0-9a-f]{32}$/i.test(md5)){const hash=encodeURIComponent(md5);for(const [label,url] of [['LR2','http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5='+hash],['SV','https://ir.stellabms.xyz/charts/'+hash],['BMS','https://www.bms-ir.org/new/song?songmd5='+hash]]){if(ir.childNodes.length)ir.appendChild(document.createTextNode(' / '));ir.appendChild(link(label,url))}}else{ir.textContent='—';ir.classList.add('empty')}tr.appendChild(ir);tr.appendChild(urlCell('本体',row.url));tr.appendChild(urlCell('差分',row.url_diff));tr.appendChild(urlCell('VIEW',/^[0-9a-f]{32}$/i.test(md5)?'https://bms-score-viewer.pages.dev/view?md5='+encodeURIComponent(md5):''));tr.appendChild(cell(row.comment,'comment'));body.appendChild(tr)}
  }
 }
 load().catch(()=>{document.querySelector('#status').textContent='データを読み込めませんでした。header.json と data.json の公開状況を確認してください。'});
