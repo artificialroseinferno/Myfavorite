@@ -1,1 +1,50 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="bmstable" content="header.json"><meta name="viewport" content="width=device-width"><title>BMS 難易度表</title><style>body{font-family:sans-serif;max-width:1000px;margin:3em auto;padding:0 1em;background:#faf7ff;color:#453b59}table{border-collapse:collapse;width:100%}td,th{padding:.6em;border-bottom:1px solid #ddd;text-align:left}th{background:#eee5f7}</style></head><body><h1 id="name">難易度表</h1><p id="status">読み込み中…</p><table><thead><tr><th>LEVEL</th><th>TITLE</th><th>ARTIST</th><th>COMMENT</th></tr></thead><tbody id="rows"></tbody></table><script>Promise.all([fetch('header.json').then(r=>r.json()),fetch('data.json').then(r=>r.json())]).then(([h,rows])=>{document.title=h.name;document.querySelector('#name').textContent=h.name;document.querySelector('#status').textContent=rows.length+' 譜面';for(const row of rows){const tr=document.createElement('tr');for(const value of [h.symbol+row.level,row.title,row.artist,row.comment]){const td=document.createElement('td');td.textContent=value||'';tr.append(td)}document.querySelector('#rows').append(tr)}}).catch(()=>document.querySelector('#status').textContent='読み込みに失敗しました。HTTPサーバーで開いてください。');</script></body></html>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="bmstable" content="header.json">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMS 難易度表</title>
+<style>
+:root{color-scheme:light;--ink:#2c2734;--muted:#746b7c;--accent:#65518b;--line:#e1dce8;--paper:#fff;--back:#f5f2f8}
+*{box-sizing:border-box}body{margin:0;background:var(--back);color:var(--ink);font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.5}
+header{background:#30283d;color:white;padding:20px max(24px,calc((100% - 1400px)/2))}header h1{font-size:1.3rem;margin:0}main{max-width:1448px;margin:auto;padding:24px}
+.intro{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:20px;box-shadow:0 2px 10px #3323470a}
+.intro p{margin:0;color:var(--muted)}.legend{font-size:.88rem;margin-top:6px!important}.level-nav{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.level-nav a{display:inline-block;padding:3px 9px;border-radius:6px;background:#f0eaf8;color:var(--accent);text-decoration:none;font-size:.85rem;font-weight:600}
+.level-nav a:hover{background:#e2d7f1;text-decoration:underline}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--paper);box-shadow:0 2px 12px #3323470a}
+table{border-collapse:collapse;width:100%;min-width:900px;text-align:left;font-size:.91rem}th{background:#e9e3ef;color:#51415e;white-space:nowrap}th,td{padding:9px 10px;border-bottom:1px solid #eeeaf1;vertical-align:top}tbody tr.chart:nth-child(odd){background:#fbf9fd}tbody tr.chart:hover{background:#f0eaf8}
+.level-row th{background:#514467;color:#fff;padding:10px 12px;font-size:.95rem;scroll-margin-top:12px}.level-row .count{font-size:.82rem;font-weight:normal;color:#e2dbee;margin-left:8px}
+td.level{white-space:nowrap;font-weight:700;color:var(--accent)}td.actions{white-space:nowrap}a{color:#5c448d}a:hover{color:#382667}td.actions a{font-size:.84rem;font-weight:600}.empty{color:#b3a9bc}.comment{white-space:pre-wrap;overflow-wrap:anywhere}.title{min-width:260px}.artist{min-width:180px}
+@media(max-width:700px){header{padding:18px}main{padding:14px}table{font-size:.86rem}}
+</style>
+</head>
+<body>
+<header><h1 id="name">BMS 難易度表</h1></header>
+<main>
+<section class="intro"><p id="status" role="status">読み込み中…</p><p class="legend">タイトルからLR2IR、VIEWから譜面ビューアを開けます。本体・差分は登録されたURLを表示します。</p><nav class="level-nav" id="level-nav" aria-label="レベル一覧"></nav></section>
+<div class="table-wrap"><table><thead><tr><th>Level</th><th>Title / LR2IR</th><th>Artist</th><th>本体</th><th>差分</th><th>VIEW</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div>
+</main>
+<script>
+'use strict';
+function text(value){return value == null ? '' : String(value)}
+function safeUrl(value){try{const raw=text(value).trim();if(!raw)return null;const u=new URL(raw);return u.protocol==='http:'||u.protocol==='https:' ? u.href : null}catch(_){return null}}
+function link(label,href){const a=document.createElement('a');a.textContent=label;a.href=href;a.target='_blank';a.rel='noopener noreferrer';return a}
+function cell(value,className){const td=document.createElement('td');if(className)td.className=className;td.textContent=text(value);return td}
+function urlCell(label,url){const td=cell('', 'actions');const safe=safeUrl(url);if(safe)td.appendChild(link(label,safe));else{td.textContent='—';td.classList.add('empty')}return td}
+async function load(){
+ const response=await fetch('header.json');if(!response.ok)throw new Error('header.json');const header=await response.json();
+ const dataResponse=await fetch(new URL(header.data_url, response.url));if(!dataResponse.ok)throw new Error('data.json');const rows=await dataResponse.json();if(!Array.isArray(rows))throw new Error('invalid data');
+ const name=text(header.name)||'BMS 難易度表';const symbol=text(header.symbol);document.title=name;document.querySelector('#name').textContent=name;document.querySelector('#status').textContent=rows.length+' 譜面';
+ const groups=new Map();for(const row of rows){const level=text(row.level);if(!groups.has(level))groups.set(level,[]);groups.get(level).push(row)}
+ const body=document.querySelector('#rows');const nav=document.querySelector('#level-nav');let index=0;
+ for(const [level,items] of groups){
+  const id='level-'+index++;const label=symbol+level;const navLink=document.createElement('a');navLink.href='#'+id;navLink.textContent=label;nav.appendChild(navLink);
+  const group=document.createElement('tr');group.className='level-row';group.id=id;const heading=document.createElement('th');heading.colSpan=7;heading.scope='rowgroup';heading.append(document.createTextNode(label));const count=document.createElement('span');count.className='count';count.textContent=items.length+' 譜面';heading.appendChild(count);group.appendChild(heading);body.appendChild(group);
+  for(const row of items){const tr=document.createElement('tr');tr.className='chart';tr.appendChild(cell(label,'level'));const title=cell('','title');const md5=text(row.md5).trim();if(/^[0-9a-f]{32}$/i.test(md5)){title.appendChild(link(text(row.title)||'（タイトルなし）','http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=ranking&bmsmd5='+encodeURIComponent(md5)))}else title.textContent=text(row.title)||'（タイトルなし）';tr.appendChild(title);tr.appendChild(cell(row.artist,'artist'));tr.appendChild(urlCell('本体',row.url));tr.appendChild(urlCell('差分',row.url_diff));tr.appendChild(urlCell('VIEW',/^[0-9a-f]{32}$/i.test(md5)?'https://bms-score-viewer.pages.dev/view?md5='+encodeURIComponent(md5):''));tr.appendChild(cell(row.comment,'comment'));body.appendChild(tr)}
+ }
+}
+load().catch(()=>{document.querySelector('#status').textContent='データを読み込めませんでした。header.json と data.json の公開状況を確認してください。'});
+</script>
+</body>
+</html>
