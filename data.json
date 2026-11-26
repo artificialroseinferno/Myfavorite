@@ -1410,6 +1410,16 @@
     "comment": ""
   },
   {
+    "level": "G0",
+    "md5": "a9836a058515f67ec778fa257440b125",
+    "title": "Hifumi Daisuki - ahaha remix [Torment]",
+    "artist": "桐藤ナギサ obj.Tetra",
+    "url": "https://venue.bmssearch.net/bmstukuru2023/73",
+    "url_diff": "https://stellabms.xyz/upload/2697",
+    "lr2_bmsid": "",
+    "comment": "乱打、微縦、ジャリ st0"
+  },
+  {
     "level": "P0",
     "md5": "98ce9d2537a1fe9b767fd495e1d7b339",
     "lr2_bmsid": "",
@@ -1877,6 +1887,16 @@
     "artist": "櫟井唯 / 岡野佳 obj.hex",
     "url": "http://manbow.nothing.sh/event/event.cgi?action=More_def&num=441&event=104",
     "url_diff": "https://dl.dropboxusercontent.com/s/ixua4gbggolcdgk/yui.zip",
+    "comment": ""
+  },
+  {
+    "level": "G2",
+    "md5": "1706b5d59b7c09ea492b76747cd3593f",
+    "title": "Rockstar [KOZUExtra]",
+    "artist": "前川みく + 多田李衣菜 / さぶん : ゆさ こずえ",
+    "url": "https://k-bms.com/party_pabat/party2016.jsp?board_num=16&num=9&order=reg&odtype=a",
+    "url_diff": "https://www.dropbox.com/s/5ylkoi5v78y6g7b/_rockstar_kozue.bms?dl=0",
+    "lr2_bmsid": "",
     "comment": ""
   },
   {
@@ -2860,6 +2880,26 @@
     "comment": ""
   },
   {
+    "level": "G6",
+    "md5": "04a2fd3d70a344fd28446c8b80d320e5",
+    "title": "8bit Adventurer [Great Thing]",
+    "artist": "Lime / Frantzz obj:1008",
+    "url": "",
+    "url_diff": "https://gnqg.rosx.net/upload/upload.cgi?get=04565",
+    "lr2_bmsid": "",
+    "comment": ""
+  },
+  {
+    "level": "G6",
+    "md5": "b1f6eba3617d87275ff6d42c1fa3493a",
+    "title": "\"Fishpot\" [Su-9]",
+    "artist": "Lemi. obj:И",
+    "url": "",
+    "url_diff": "https://stellabms.xyz/upload/2448",
+    "lr2_bmsid": "",
+    "comment": "st6"
+  },
+  {
     "level": "P6",
     "md5": "c20426480da2741a37d2fdf5f70eaf1b",
     "lr2_bmsid": "",
@@ -2948,6 +2988,16 @@
     "url": "https://www.mediafire.com/file/xf2omk242vysr8j/%255BSP-%2523%255D_tinnitus.zip",
     "url_diff": "https://stellabms.xyz/upload/2900",
     "comment": ""
+  },
+  {
+    "level": "P6",
+    "md5": "819a5580904dc0146995b52f12619517",
+    "title": "Love & Justice [Hand Crusher]",
+    "artist": "フロン / ラズベリル / obj : lemon_aided",
+    "url": "",
+    "url_diff": "http://www.dropbox.com/s/ob3mnzf94bptw8d/Love%26Justice_sabun.zip",
+    "lr2_bmsid": "",
+    "comment": "st6"
   },
   {
     "level": "G7",
